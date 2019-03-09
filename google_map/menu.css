@@ -1,0 +1,32 @@
+
+.menu_casing{background: repeat-y scroll 0 0 #F0F0F0;border: 1px solid #CCCCCC;margin: 0;overflow: hidden;padding: 2px; width:120px;}
+.menu_casing .menu_item{border: none;cursor: pointer;font-size: 12px;height: 22px;line-height: 22px;margin: 0;overflow: hidden;padding: 0;position: relative;}
+.menu_casing .menu_item .menu_text{left: 28px;position: absolute;top: 0;}
+.menu_casing .menu_item.item_active{background: #FAFAFA;border: 1px solid #7EABCD;height: 20px;line-height: 20px;border-radius: 3px 3px 3px 3px;}
+.menu_casing .menu_separator{background: url(images/menu_sep.png) repeat-x; height:2px;font-size:2px; line-height: 2px;margin:3px 0 3px 24px}
+.menu_casing .menu_icon{ height: 16px;left: 2px;position: absolute;top: 3px; width: 16px; background-repeat:no-repeat;}
+#log{width:100%;font-size:0.6em;resize: none;}
+#url{width:100%;font-size:0.6em;resize: none;}
+.marker-container{ width: 450; height: 200, }
+.html{height:100%}  
+.body{height:100%;margin:0px;padding:0px}
+#set{width:25%;height:100%;float:left;background-color:#ffffff;}
+.table{width:80%;margin:10px 10px 10px 10px}
+.title{width:30%;align:left}
+.value{width:70%;}
+.tv1{height:20px;}
+#routingtypes{width:100%}
+#test_start{width:222%;}
+#test_end{width:100%;}
+#route_start{width:100%;}
+#test_count{width:100%;}
+#route_search{width:100%;}
+#savemap{width:100%;}
+#loadmap{width:100%;}
+#search{width:100%;}
+#clear{width:100%;}
+#Initialization{width:100%;}
+#displayisoline{width:100%;}
+#map{width:75%;height:1200px;float:left;}
+#searchTime{float:left;font-size:0.6em;width:100%;}
+#drawTime{float:left;font-size:0.6em;width:100%;}

@@ -1,0 +1,689 @@
+<html>
+<head>
+    <title>google map</title>    
+    <link rel="Stylesheet" href="menu.css" type="text/css" />
+    <!--<script src="http://maps.google.com/maps/api/js?v=3.1&sensor=true&key=AIzaSyBu4tXLMvtfIZ4WdZ5isH16FfX03ddy9JA" type="text/javascript"></script>-->
+	<script src="http://ditu.google.cn/maps/api/js?v=3&sensor=true" type="text/javascript" charset="UTF-8"></script>
+    <script type="text/javascript" src="menu_v3.js" charset="utf-8"></script>
+	<script src="jquery-3.3.1.js"></script>
+</head>
+<body onload="initialize();">
+	<div id="set">
+		<table>
+			<tr>
+				<td class="title">
+					VP(lat,lng)
+				</td>
+				<td class="value">
+					<input type="text" id="vp" onchange="getValue(this);"/>
+					<input type="button" id="vp_go" value="vp_go" onclick="vehiclepoint();"/>
+				</td>				
+			</tr>	
+			<tr>
+				<td class="title">
+					DP(lat,lng)
+				</td>
+				<td class="value">
+					<input type="text" id="dp" onchange="getValue(this);"/>
+					<input type="button" id="dp_go" value="dp_go" onclick="designatedpoint();"/>
+				</td>
+			</tr>	
+			<tr>
+				<td class="title">
+					COUNT
+				</td>
+				<td class="value">
+					<output type="text" id="count"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					Radius(meter)
+				</td>
+				<td class="value">
+					<input type="text" id="radius" onchange="getValue(this);" value="5000"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					Range(meter)
+				</td>
+				<td class="value">
+					<input type="text" id="rangevalue" value="4000" onchange="getValue(this);"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					Toll($)
+				</td>
+				<td class="value">
+					<input type="text" id="toll"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					Resolution
+				</td>
+				<td class="value">
+					<input type="text" id="resolution" value="50" onchange="getValue(this);"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					Model
+				</td>
+				<td class="title" id="model">
+					<select id="model_select">
+						<option value="C-SDN">C-SDN</option>
+						<option value="B-HB">B-HB</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					Speed
+				</td>
+				<td class="value">
+					<input type="text" id="speed" onchange="getValue(this);" value="10,1.78,20,1.44,30,1.19,40,1.04,50,1.00,60,1.06,70,1.22,80,1.48,90,1.84,100,2.31,110,2.87,120,3.54" style="background-color:yellow"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					CorridorWidth(km²)
+				</td>
+				<td class="value">
+					<input type="text" id="corridorWidth" value="5" onchange="getValue(this);"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					Ascent
+				</td>
+				<td class="value">
+					<input type="text" id="ascent" value="3.7" onchange="getValue(this);" style="background-color:yellow"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					Descent
+				</td>
+				<td class="value">
+					<input type="text" id="descent" value="2.4" onchange="getValue(this);" style="background-color:yellow"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					MaxPoints
+				</td>
+				<td class="value">
+					<input type="text" id="MaxPoints" onchange="getValue(this);" value="500"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					TimePenalty
+				</td>
+				<td class="value">
+					<input type="text" id="timePenalty" value="0" onchange="getValue(this);" style="background-color:yellow"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					Auxiliary
+				</td>
+				<td class="value">
+					<input type="text" id="auxiliaryconsumption" value="0" onchange="getValue(this);" style="background-color:yellow"/>
+				</td>
+			</tr>				
+			<tr>
+				<td class="title">
+					Acceleration
+				</td>
+				<td class="value">
+					<input type="text" id="acceleration" onchange="getValue(this);" value="2.4" style="background-color:yellow"/>
+				</td>
+			</tr>				
+			<tr>
+				<td class="title">
+					Deceleration
+				</td>
+				<td class="value">
+					<input type="text" id="deceleration" onchange="getValue(this);" value="1.5" style="background-color:yellow"/>
+				</td>
+			</tr>					
+			<tr>
+				<td class="title">
+					Mode
+				</td>
+				<td class="title" id="mode">
+					<select id="mode_select">
+						<option value="fastest">fastest</option>
+						<option value="shortest">shortest</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					RangeType
+				</td>
+				<td class="title" id="rangetype">
+					<select id="rangetype_select">
+						<option value="distance">distance</option>
+						<option value="time">time</option>
+						<option value="consumption">consumption</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					Types
+				</td>
+				<td class="value" id="routingtypes">
+				<select id="routingtypes_select">
+					<option value ="car">car</option>
+					<option value ="carHOV">carHOV</option>
+					<option value ="pedestrian">pedestrian</option>
+					<option value ="publicTransport">publicTransport</option>
+					<option value ="publicTransport">publicTransportTimeTable</option>
+					<option value ="publicTransport">truck</option>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					HazardousGoods
+				</td>
+				<td class="value" id="shippedHazardousGoods">
+				<select id="shippedHazardousGoods_select">
+					<option value ="explosive">explosive</option>
+					<option value ="gas">gas</option>
+					<option value ="flammable">flammable</option>
+					<option value ="combustible">combustible</option>
+					<option value ="organic">organic</option>
+					<option value ="poison">poison</option>
+					<option value ="radioActive">radioActive</option>
+					<option value ="corrosive">corrosive</option>
+					<option value ="poisonousInhalation">poisonousInhalation</option>
+					<option value ="harmfulToWater">harmfulToWater</option>
+					<option value ="other">other</option>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					limitedWeight(ton)
+				</td>
+				<td class="value">
+					<input type="text" id="limitedWeight" value="0" onchange="getValue(this);"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					Height(meter)
+				</td>
+				<td class="value">
+					<input type="text" id="height" value="0" onchange="getValue(this);"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					Width(meter)
+				</td>
+				<td class="value">
+					<input type="text" id="width" value="0" onchange="getValue(this);"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					Length(meter)
+				</td>
+				<td class="value">
+					<input type="text" id="length" value="0" onchange="getValue(this);"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					traffic
+				</td>
+				<td class="value">
+					<input type="checkbox" id="traffic" value="disabled"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="button" id="Initialization" value="Initialization" onclick="init_map();" />
+				</td>
+				<td>
+					<input type="button" id="displayisoline" value="displayisoline" />
+				</td>
+			</tr>
+			<tr>
+				<td class="tv">
+					<input type="button" id="search" value="search"/>
+				</td>
+				<td class="tv">
+					<input type="button" id="clear" value="clear" onclick="remove_overlay();"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">
+					TESTCOUNT
+				</td>
+				<td class="value">
+					<input type="text" id="test_count" onchange="getValue(this);"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="test">
+					<input type="button" id="test_start" value="Test Start" onclick="start_test();"/>
+				</td>
+			</tr>		
+			<tr>
+				<td class="route">
+					<input type="button" id="route_start" value="CalculatingRoute"/>
+				</td>
+				<td class="route">
+					<input type="button" id="route_search" value="ChargingPileRoad" readonly="true"/>
+				</td>
+			</tr>	
+			<tr>
+				<td>
+					<input type="button" id="savemap" value="save" onclick="saveMapFile();"/>
+				</td>
+				<td>
+					<input type="button" id="loadmap" value="load" onclick="repaintingMap();" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input type="file" id="selectmap" onchange="loadMapFile(this);"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="tv1">
+					<span id="searchTime"></span>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="tv1">
+					<span id="drawTime"></span>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="tv2">
+					<textarea rows="3" cols="20" id="url"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="tv2">
+					<textarea rows="10" cols="20" id="log"></textarea>
+				</td>
+			</tr>			
+		</table>
+	</div>
+
+
+
+    <div id="map"></div>
+    <script type="text/javascript">
+        Array.prototype.remove = function(item) {
+			for (var i = 0; i < this.length; i++) {
+				if (this[i] == item) {
+					this.splice(i, 1);
+				}
+			}
+        }
+        Array.prototype.getItem = function(id) {
+			for (var i = 0; i < this.length; i++) {
+				if (this[i].identity == id) {
+					return this[i];
+				}
+			}
+        }
+		
+		var map;
+		var polygon1 = null;
+		var flightPath = null;
+		var markers = new Array();
+		var identity = 0;
+		var lat = 0;
+		var lng = 0;
+		var locationLat = 0;
+		var locationLng = 0;
+		var destinationLat = 0;
+		var destinationLng = 0;
+				
+		var vp_value = 0;
+		var vp_value_lng = 0;
+		var vp_value_lat = 0;
+		var dp_value = 0;
+		var dp_value_lng = 0;
+		var dp_value_lat = 0;
+		var Mode_value = "fastest";
+		var rangetype_value = "distance";
+		var log_value = 0;
+		var range_value = 4000;
+		var test_count = 1;
+		var ascent_value = 0;
+		var descent_value = 0;
+		var timePenalty_value = 0;
+		var auxiliaryconsumption_value = 0;
+		var acceleration_value = 0;
+		var deceleration_value = 0;
+		var pointsring="";
+		var flage =true;
+		var request_time_value = 0;
+		var draw_time_value = 0;
+		var radius_value = 5000;
+		var maxpoints_value = 500;
+		var traffic_value = "disabled";
+		var resolution_value = 50;
+		var corridorWidth_value = 5000;
+		var limitedWeight_value = 0;
+		var routingtypes_value = "car";
+		var height_value = 0;
+		var width_value = 0;
+		var length_value = 0;
+		var shippedHazardousGoods_value = "explosive";
+		var operating_value = 0;
+		var speed_value=new Array(10,1.78,20,1.44,30,1.19,40,1.04,50,1.00,60,1.06,70,1.22,80,1.48,90,1.84,100,2.31,110,2.87,120,3.54);
+		var search_lng = 0;
+		var search_lat = 0;
+		var search_flag = 0;	
+		var requesttime1 = 0;
+		document.getElementById("route_search").setAttribute("disabled", true);
+
+		$("#routingtypes").change(function(){
+			var routingtypes_text = $("#routingtypes option:selected").text();
+			routingtypes_value = routingtypes_text;
+		});
+		$("#mode").change(function() {
+			var mode_test = $("#mode option:selected").text();
+			Mode_value = mode_test;
+		});
+		$("#shippedHazardousGoods").change(function() {
+			var shippedHazardousGoods_text = $("#shippedHazardousGoods option:selected").text();
+			shippedHazardousGoods_value = shippedHazardousGoods_text;
+		});
+		$("#rangetype").change(function() {
+			var rangetype_test = $("#rangetype option:selected").text();
+			rangetype_value = rangetype_test;
+		});
+		$("#displayisoline").click(function() {
+			var displayisoline_temp = $("#displayisoline").val();
+			//displayisoline_value = displayisoline_temp;
+			operating_value = displayisoline_temp;
+		});
+		$("#search").click(function() {
+			var search_temp = $("#search").val();
+			//search_value = search_temp;
+			operating_value = search_temp;
+		});
+		$("#route_start").click(function() {
+			var route_start_temp = $("#route_start").val();
+			//route_start_value = route_start_temp;
+			operating_value = route_start_temp;
+		});
+		$("#route_search").click(function() {
+			var route_search_temp = $("#route_search").val();
+			//route_search_value = route_search_temp;
+			operating_value = route_search_temp;
+		});
+		$("#traffic").on("click", function() {
+			if($(this).is(":checked")) {
+				traffic_value = "enabled";
+			} else {
+				traffic_value = "disabled";
+			}
+		});
+		
+				
+		function initialize() {
+			var coor = new google.maps.LatLng(40.773358, -73.958229);
+			map = new google.maps.Map(document.getElementById("map"), { zoom: 15, center: coor, mapTypeControl: false, mapTypeId: google.maps.MapTypeId.ROADMAP });
+			var menu = new MenuControl(map);
+			menu.sender = map;
+			google.maps.event.addListener(map, "rightclick", function(e) {
+				if (menu.isEnable) {
+					menu.coordinate = { point: e.pixel, latlng: e.latLng };
+					menu.container.style.left = e.pixel.x + "px";
+					menu.container.style.top = e.pixel.y + "px";
+					menu.show("map");
+				}
+			});
+			var image_location = "location.png";
+			var image_destination = "destination.png";
+			var image_EV = "EV-Stand.ico";
+			menu.addItem(new MenuItem({ text: "set location", groupName: "map", handler: function(coor) {
+				var marker = new google.maps.Marker({ position: coor.latlng, map: map, draggable: false, icon:  image_location});
+				marker.identity = identity++;
+				lat = coor.latlng.lat();
+				lng = coor.latlng.lng();
+				locationLat = lat;
+				locationLng = lng;
+				$("#vp").val(lat + "," + lng);
+				// 添加标记的右击事件，弹出菜单时，IE以外的浏览器会出现偏移
+				var click = function(e) {
+					menu.sender = marker;
+					if (menu.isEnable) {
+						var x = e.pixel.x;
+						var y = e.pixel.y;				
+						if (document.all) {
+							x = window.event.x;
+							y = window.event.y;
+						} else { // 在IE以外的浏览器使用鼠标的x和y坐标弹出菜单时会出现偏移，需要另外计算
+							var eve = window.event;
+							if (!eve) {
+								var c = click;
+								do {
+									var arg0 = c.arguments[0];
+									if (arg0) {
+										if (arg0.constructor == MouseEvent) {
+											eve = arg0;
+											break;
+										}
+									}
+									c = c.caller;
+								} while (c.caller)
+							}
+							var scale = Math.pow(2, map.getZoom());
+							var bounds = map.getBounds();
+							var nw = new google.maps.LatLng(bounds.getNorthEast().lat(), bounds.getSouthWest().lng());
+							var point = map.getProjection().fromLatLngToPoint(nw);
+							var worldCoor = map.getProjection().fromLatLngToPoint(marker.getPosition());
+							var off = new google.maps.Point(Math.floor((worldCoor.x - point.x) * scale), Math.floor((worldCoor.y - point.y) * scale));
+							var markerImg = eve.target.parentNode.parentNode.childNodes[0];
+							x = (off.x - (markerImg.offsetWidth) / 2) + eve.layerX;
+							y = (off.y - markerImg.offsetHeight) + eve.layerY;
+						}
+
+						menu.coordinate = { point: new google.maps.Point(x, y), latlng: coor.latlng };
+						menu.container.style.left = x + "px";
+						menu.container.style.top = y + "px";
+						menu.show("marker");
+					}
+				}
+				google.maps.event.addListener(marker, "click", click);
+				markers.push(marker);	
+			}}));
+			
+			menu.addItem(new MenuItem({ text: "set destination", groupName: "map", handler: function(coor) {
+				var marker = new google.maps.Marker({ position: coor.latlng, map: map, draggable: false, icon: image_destination });
+				marker.identity = identity++;
+				lat = coor.latlng.lat();
+				lng = coor.latlng.lng();
+				destinationLat = lat;
+				destinationLng = lng;
+				$("#dp").val(lat + "," + lng);
+
+				// 添加标记的右击事件，弹出菜单时，IE以外的浏览器会出现偏移
+				var click = function(e) {
+					menu.sender = marker;
+					if (menu.isEnable) {
+						var x = e.pixel.x;
+						var y = e.pixel.y;				
+						if (document.all) {
+							x = window.event.x;
+							y = window.event.y;
+						} else { // 在IE以外的浏览器使用鼠标的x和y坐标弹出菜单时会出现偏移，需要另外计算
+							var eve = window.event;
+							if (!eve) {
+								var c = click;
+								do {
+									var arg0 = c.arguments[0];
+									if (arg0) {
+										if (arg0.constructor == MouseEvent) {
+											eve = arg0;
+											break;
+										}
+									}
+									c = c.caller;
+								} while (c.caller)
+							}
+							var scale = Math.pow(2, map.getZoom());
+							var bounds = map.getBounds();
+							var nw = new google.maps.LatLng(bounds.getNorthEast().lat(), bounds.getSouthWest().lng());
+							var point = map.getProjection().fromLatLngToPoint(nw);
+							var worldCoor = map.getProjection().fromLatLngToPoint(marker.getPosition());
+							var off = new google.maps.Point(Math.floor((worldCoor.x - point.x) * scale), Math.floor((worldCoor.y - point.y) * scale));
+							var markerImg = eve.target.parentNode.parentNode.childNodes[0];
+							x = (off.x - (markerImg.offsetWidth) / 2) + eve.layerX;
+							y = (off.y - markerImg.offsetHeight) + eve.layerY;
+						}
+
+						menu.coordinate = { point: new google.maps.Point(x, y), latlng: coor.latlng };
+						menu.container.style.left = x + "px";
+						menu.container.style.top = y + "px";
+						menu.show("marker");
+					}
+				}
+				google.maps.event.addListener(marker, "click", click);
+				markers.push(marker);	
+			}}));
+			
+			//menu.addSeparator("map");//增加分割
+			menu.addItem(new MenuItem({ text: "添加描述", groupName: "marker", handler: function(coor) {
+				var marker = menu.sender;
+				if (!marker.win) {
+					menu.sender.win = new google.maps.InfoWindow({ content: "<textarea onblur=\"edited(this," + marker.identity + ");\" rows=\"3\" cols=\"22\"></textarea>" });
+					google.maps.event.addListener(marker, "click", function() {
+						if (marker.win) marker.win.open(map, marker);
+					});
+					marker.description = "";
+				}
+				marker.win.setContent("<textarea onblur=\"edited(this," + marker.identity + ");\" rows=\"3\" cols=\"22\">" + marker.description + "</textarea>")
+				marker.win.open(map, marker);
+			}}));
+		 }
+	if (window.Event){
+		document.captureEvents(Event.MOUSEUP);
+	}
+	function nocontextmenu(){
+		event.cancelBubble = true
+		event.returnValue = false;
+		return false;
+	}
+	function norightclick(e){
+		if (window.Event){
+			if (e.which == 2 || e.which == 3) return false;
+		}else{
+			if (event.button == 2 || event.button == 3){
+				event.cancelBubble = true
+				event.returnValue = false;
+				return false;
+			}
+		}
+	}
+	document.oncontextmenu = nocontextmenu; 
+	document.onmousedown = norightclick; 
+	
+
+	$(document).ready(function () {
+		$("#search").click(function () {
+			requesttime1 = new Date().getTime();
+			var src = "https://ev-v2.cit.cc.api.here.com/ev/stations.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&prox=" + lat + "," + lng + "," + radius_value;
+			$("#url").html(src);
+			$("head").append("<script src='" + src + "&jsoncallback=showEv'><\/script>");
+		});
+	});
+	
+	$(document).ready(function () {
+		var src = "";
+		$("#route_start").click(function () {
+			requesttime1 = new Date().getTime();
+			if(routingtypes_value == "pedestrian") {
+				src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" +  routingtypes_value;
+			} else if(routingtypes_value == "truck" && rangetype_value == "consumption") {	
+				src = "https://route.api.here.com/routing/7.2/calculateroute.json?app_code=eAhDQZqHpp-FiTAuvnXSdA&app_id=2XfHBClGvrrZVuOgk856&consumptionmodel=standard&customconsumptiondetails=speed," + speed_value +";ascent," + ascent_value +";descent," +descent_value +"&jsonattributes=41&language=en-us&legattributes=li&linkattributes=cn&maneuverattributes=po,ti,pt,ac,di,fj,ix&metricsystem=metric&mode=" + Mode_value + ";car&routeattributes=sh,gr&waypoint0=geo!stopOver!"+locationLat + "," + locationLng + "&waypoint1=geo!stopOver!"+destinationLat +"," + destinationLng;
+				
+			} else if(routingtypes_value == "truck" && rangetype_value != "consumption") {
+				src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" +  routingtypes_value + ";" + "traffic:" + traffic_value + "&limitedWeight=" + limitedWeight_value + "&height=" + height_value + "&shippedHazardousGoods=" + shippedHazardousGoods_value;
+			} else if(routingtypes_value == "publicTransport") {
+				src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" + routingtypes_value + "&departure=now&combineChange=true";
+			} else if(routingtypes_value == "car" && rangetype_value == "consumption") {
+				src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" +  routingtypes_value + ";" + "traffic:" + traffic_value + "&consumptionmodel=standard&customconsumptiondetails=speed,"+ speed_value +";ascent," + ascent_value + ";" + "descent," + descent_value + ";" + "timePenalty," + timePenalty_value + ";" + "auxiliaryconsumption," + auxiliaryconsumption_value + ";" + "acceleration," + acceleration_value + ";" + "deceleration," + deceleration_value;
+			} else if(routingtypes_value == "car" && rangetype_value != "consumption") {
+				src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" +  routingtypes_value + ";" + "traffic:" + traffic_value;
+			} else {
+				src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" +  routingtypes_value + ";" + "traffic:" + traffic_value;
+			}
+			//var src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" +  routingtypes_value + ";" + "traffic:" + traffic_value + "&limitedWeight=" + limitedWeight_value + "&height=" + height_value;
+			$("#url").html(src);
+			$("head").append("<script src='" + src + "&jsoncallback=showRoute'><\/script>");
+			});
+	});	
+	
+	$(document).ready(function () {
+		$("#route_search").click(function () {
+			requesttime1 = new Date().getTime();
+			var src = "https://ev-v2.cit.cc.api.here.com/ev/stations.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&corridor="+pointsring+"&offset=0"+"&corridorwidth=" + corridorWidth_value;
+			$("#url").html(src);
+			$("head").append("<script src='" + src + "&jsoncallback=showRouteSearch'><\/script>");
+			pointsring = "";
+		});
+	});
+	
+	$("#model").change(function() {
+		if($("#model_select").val() == 'C-SDN')
+		{
+			speed_value = new Array(10,1.78,20,1.44,30,1.19,40,1.04,50,1.00,60,1.06,70,1.22,80,1.48,90,1.84,100,2.31,110,2.87,120,3.54);
+			ascent_value = 3.7;
+			descent_value = 2.4;
+			acceleration_value = 2.4;
+			deceleration_value = 1.5;
+		}
+		if($("#model_select").val() == 'B-HB')
+		{
+			speed_value = new Array(10,1.15,20,1.06,30,0.99,40,0.96,50,1.00,60,1.12,70,1.35,80,1.70,90,2.17,100,2.76,110,3.47,120,4.32);
+			ascent_value = 3.1;
+			descent_value = 2.0;
+			acceleration_value = 2.2;
+			deceleration_value = 1.4;
+		}
+		$("#speed").val(speed_value);
+		$("#ascent").val(ascent_value);
+		$("#descent").val(descent_value);
+		$("#timePenalty").val("0");
+		$("#auxiliaryconsumption").val("0");
+		$("#acceleration").val(acceleration_value);
+		$("#deceleration").val(deceleration_value);	
+	});
+	
+	$(document).ready(function() {
+		var src = 0;
+		$("#displayisoline").click(function() {
+			requesttime1 = new Date().getTime();
+			if(rangetype_value == "consumption") {
+				src = "https://isoline.route.api.here.com/routing/7.2/calculateisoline.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&mode=" + Mode_value + ";" + routingtypes_value + ";traffic:" + traffic_value + "&rangetype=" + rangetype_value + "&start=geo!" + locationLat + "," + locationLng + "&range=" + range_value +"&consumptionmodel=standard&customconsumptiondetails=speed,"+ speed_value +";ascent," + ascent_value + ";" + "descent," + descent_value + ";" + "timePenalty," + timePenalty_value + ";" + "auxiliaryconsumption," + auxiliaryconsumption_value + ";" + "acceleration," + acceleration_value + ";" + "deceleration," + deceleration_value + "&maxpoints=" + maxpoints_value + "&resolution=" + resolution_value;
+			} else {
+				src = "https://isoline.route.api.here.com/routing/7.2/calculateisoline.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&mode=" + Mode_value + ";" + routingtypes_value + ";traffic:" + traffic_value + "&rangetype=" + rangetype_value + "&start=geo!" + locationLat + "," + locationLng + "&range=" + range_value + "&maxpoints=" + maxpoints_value + "&resolution=" + resolution_value;
+			}
+			//var src = "https://isoline.route.api.here.com/routing/7.2/calculateisoline.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&mode=" + Mode_value + ";" + "car;traffic:" + traffic_value + "&rangetype=" + rangetype_value + "&start=geo!" + locationLat + "," + locationLng + "&range=" + range_value +"&consumptionmodel=standard&customconsumptiondetails=speed,"+ speed_value +";ascent," + ascent_value + ";" + "descent," + descent_value + ";" + "timePenalty," + timePenalty_value + ";" + "auxiliaryconsumption," + auxiliaryconsumption_value + ";" + "acceleration," + acceleration_value + ";" + "deceleration," + deceleration_value + "&maxpoints=" + maxpoints_value + "&resolution=" + resolution_value;
+			$("#url").html(src);
+			$("head").append("<script src='" + src + "&jsoncallback=showIso'><\/script>");
+		});
+	});
+
+</script>
+</body>
+</html>

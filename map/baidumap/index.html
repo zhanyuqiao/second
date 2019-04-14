@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />  
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	    <script src="jquery-3.3.1.js"></script>
+	    <title>Insert title here</title>
+		<style type="text/css">
+			html{height:100%}  
+			body{height:100%;margin:0px;padding:0px}
+			#set{width:25%;height:100%;float:left;background-color:#ffffff;}
+			table{width:80%;margin:10px 10px 10px 10px}
+			.title{width:30%;align:left}
+			.value{width:70%;}
+			.tv1{height:20px;}
+			#routingtypes{width:100%}
+			#test_start{width:222%;}
+			#test_end{width:100%;}
+			#route_start{width:100%;}
+			#test_count{width:100%;}
+			#route_search{width:100%;}
+			#savemap{width:100%;}
+			#loadmap{width:100%;}
+			#search{width:100%;}
+			#clear{width:100%;}
+			#Initialization{width:100%;}
+			#displayisoline{width:100%;}
+			#map{width:75%;height:100%;float:left;}
+			#searchTime{float:left;font-size:0.6em;width:100%;}
+			#drawTime{float:left;font-size:0.6em;width:100%;}
+			#log{width:100%;font-size:0.6em;resize: none;}
+			#url{width:100%;font-size:0.6em;resize: none;}
+		</style>
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Ier8V5CCumkWw43SOzSOllsd7dasotpv"></script>
+		
+	</head>
+	<body>
+		<div id="set">
+			<table>
+				<tr>
+					<td class="title">
+						VP(lng,lat)
+					</td>
+					<td class="value">
+						<input type="text" id="vp" onchange="getValue(this);"/>
+					</td>
+					<!-- <td class="test">
+						<input type="button" id="vp_go" value="go" onclick="vehiclepoint();"/>
+					</td> -->
+				</tr>
+				<tr>
+					<td class="title">
+						DP(lng,lat)
+					</td>
+					<td class="value">
+						<input type="text" id="dp" onchange="getValue(this);"/>
+					</td>
+					<!-- <td class="test">
+						<input type="button" id="dp_go" value="go" onclick="designatedpoint();"/>
+					</td> -->
+				</tr>
+				<tr>
+					<td class="title">
+						COUNT
+					</td>
+					<td class="value">
+						<output type="text" id="count"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						Radius(meter)
+					</td>
+					<td class="value">
+						<input type="text" id="radius" onchange="getValue(this);" value="5000"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						Range(meter)
+					</td>
+					<td class="value">
+						<input type="text" id="rangevalue" value="4000" onchange="getValue(this);"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						Toll($)
+					</td>
+					<td class="value">
+						<input type="text" id="toll"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						Resolution
+					</td>
+					<td class="value">
+						<input type="text" id="resolution" value="50" onchange="getValue(this);"/>
+					</td>
+				</tr>
+				<!--
+				<tr>
+					<td class="title">
+						Speed
+					</td>
+					<td class="value">
+						<input type="text" id="speed" onchange="getValue(this);" value="0,1.7,10,1.4,30,1.1,50,1.0,70,1.1,100,1.2,120,1.4,140,1.8"/>
+					</td>
+				</tr>
+				-->
+				<tr>
+					<td class="title">
+						CorridorWidth(km²)
+					</td>
+					<td class="value">
+						<input type="text" id="corridorWidth" value="5" onchange="getValue(this);"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						Ascent
+					</td>
+					<td class="value">
+						<input type="text" id="ascent" value="0" onchange="getValue(this);"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						Descent
+					</td>
+					<td class="value">
+						<input type="text" id="descent" value="0" onchange="getValue(this);"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						MaxPoints
+					</td>
+					<td class="value">
+						<input type="text" id="MaxPoints" onchange="getValue(this);" value="500"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						TimePenalty
+					</td>
+					<td class="value">
+						<input type="text" id="timePenalty" value="0" onchange="getValue(this);"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						Auxiliary
+					</td>
+					<td class="value">
+						<input type="text" id="auxiliaryconsumption" value="0" onchange="getValue(this);"/>
+					</td>
+				</tr>				
+				<tr>
+					<td class="title">
+						Acceleration
+					</td>
+					<td class="value">
+						<input type="text" id="acceleration" onchange="getValue(this);" value="0"/>
+					</td>
+				</tr>				
+				<tr>
+					<td class="title">
+						Deceleration
+					</td>
+					<td class="value">
+						<input type="text" id="deceleration" onchange="getValue(this);" value="0"/>
+					</td>
+				</tr>					
+				<tr>
+					<td class="title">
+						Mode
+					</td>
+					<td class="title" id="mode">
+						<select>
+							<option value="fastest">fastest</option>
+							<option value="shortest">shortest</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						RangeType
+					</td>
+					<td class="title" id="rangetype">
+						<select>
+							<option value="distance">distance</option>
+							<option value="time">time</option>
+							<option value="consumption">consumption</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						Types
+					</td>
+					<td class="value" id="routingtypes">
+					<select>
+						<option value ="car">car</option>
+						<option value ="carHOV">carHOV</option>
+						<option value ="pedestrian">pedestrian</option>
+						<option value ="publicTransport">publicTransport</option>
+						<option value ="publicTransport">publicTransportTimeTable</option>
+						<option value ="publicTransport">truck</option>
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						HazardousGoods
+					</td>
+					<td class="value" id="shippedHazardousGoods">
+					<select>
+						<option value ="explosive">explosive</option>
+						<option value ="gas">gas</option>
+						<option value ="flammable">flammable</option>
+						<option value ="combustible">combustible</option>
+						<option value ="organic">organic</option>
+						<option value ="poison">poison</option>
+						<option value ="radioActive">radioActive</option>
+						<option value ="corrosive">corrosive</option>
+						<option value ="poisonousInhalation">poisonousInhalation</option>
+						<option value ="harmfulToWater">harmfulToWater</option>
+						<option value ="other">other</option>
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						limitedWeight(ton)
+					</td>
+					<td class="value">
+						<input type="text" id="limitedWeight" value="0" onchange="getValue(this);"/>
+					</td>
+				</tr>
+				<!--<tr>
+					<td class="title">
+						weightPerAxle(ton)
+					</td>
+					<td class="value">
+						<input type="text" id="weightPerAxle"/>
+					</td>
+				</tr>
+				-->
+				<tr>
+					<td class="title">
+						Height(meter)
+					</td>
+					<td class="value">
+						<input type="text" id="height" value="0" onchange="getValue(this);"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						Width(meter)
+					</td>
+					<td class="value">
+						<input type="text" id="width" value="0" onchange="getValue(this);"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						Length(meter)
+					</td>
+					<td class="value">
+						<input type="text" id="length" value="0" onchange="getValue(this);"/>
+					</td>
+				</tr>
+				<!--<tr>
+					<td class="title">
+						TunnelCategory
+					</td>
+					<td class="value">
+					<select>
+						<option value ="B">B</option>
+						<option value ="C">C</option>
+						<option value="D">D</option>
+						<option value="E">E</option>
+					</select>
+					</td>
+				</tr>
+				-->
+				<tr>
+					<td class="title">
+						traffic
+					</td>
+					<td class="value">
+						<input type="checkbox" id="traffic" value="disabled"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="test">
+						<input type="button" id="vp_go" value="vp_go" onclick="vehiclepoint();"/>
+					</td>
+					<td class="test">
+						<input type="button" id="dp_go" value="dp_go" onclick="designatedpoint();"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="button" id="Initialization" value="Initialization" onclick="init_map();" />
+					</td>
+					<td>
+						<input type="button" id="displayisoline" value="displayisoline" />
+					</td>
+				</tr>
+				<tr>
+					<td class="tv">
+						<input type="button" id="search" value="search"/>
+					</td>
+					<td class="tv">
+						<input type="button" id="clear" value="clear" onclick="remove_overlay();"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						TESTCOUNT
+					</td>
+					<td class="value">
+						<input type="text" id="test_count" onchange="getValue(this);"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="test">
+						<input type="button" id="test_start" value="Test Start" onclick="start_test();"/>
+					</td>
+				</tr>		
+				<tr>
+					<td class="route">
+						<input type="button" id="route_start" value="CalculatingRoute"/>
+					</td>
+					<td class="route">
+						<input type="button" id="route_search" value="ChargingPileRoad" readonly="true"/>
+					</td>
+				</tr>	
+				<tr>
+					<td>
+						<input type="button" id="savemap" value="save" onclick="saveMapFile();"/>
+					</td>
+					<td>
+						<input type="button" id="loadmap" value="load" onclick="repaintingMap();" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="file" id="selectmap" onchange="loadMapFile(this);"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="tv1">
+						<span id="searchTime"></span>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="tv1">
+						<span id="drawTime"></span>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="tv2">
+						<textarea rows="3" cols="20" id="url"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="tv2">
+						<textarea rows="10" cols="20" id="log"></textarea>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="map"></div>
+		<script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+		<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+		<script type="text/javascript"> 
+			var map = new BMap.Map("map");
+			// 创建地图实例  
+			// 创建点坐标
+			map.centerAndZoom(new BMap.Point(-73.958229,40.773358), 15);
+			// 初始化地图，设置中心点坐标和地图级别
+			var opts = {offset: new BMap.Size(20, 20)}
+			map.addControl(new BMap.NavigationControl(opts));
+			map.addControl(new BMap.ScaleControl());
+			var opts1 = {offset: new BMap.Size(20, 20)}
+			map.addControl(new BMap.MapTypeControl(opts1));
+			map.enableScrollWheelZoom();
+			map.enableContinuousZoom();
+			var menu = new BMap.ContextMenu();
+			var lng = 0;//经度
+			var lat = 0;//纬度
+			var locationLng = 0;
+			var locationLat = 0;
+			var destinationLng = 0;
+			var destinationLat = 0;
+			var vp_value = 0;
+			var vp_value_lng = 0;
+			var vp_value_lat = 0;
+			var dp_value = 0;
+			var dp_value_lng = 0;
+			var dp_value_lat = 0;
+			var Mode_value = "fastest";
+			var rangetype_value = "distance";
+			//var displayisoline_value = 0;
+			//var search_value = 0;
+			//var route_start_value = 0;
+			//var route_search_value = 0;
+			var log_value = 0;
+			var range_value = 4000;
+			var test_count = 1;
+			var ascent_value = 0;
+			var descent_value = 0;
+			var timePenalty_value = 0;
+			var auxiliaryconsumption_value = 0;
+			var acceleration_value = 0;
+			var deceleration_value = 0;
+			var pointsring="";
+			var flage =true;
+			var request_time_value = 0;
+			var draw_time_value = 0;
+			var radius_value = 5000;
+			var maxpoints_value = 500;
+			var traffic_value = "disabled";
+			var resolution_value = 50;
+			var corridorWidth_value = 5000;
+			var limitedWeight_value = 0;
+			var routingtypes_value = "car";
+			var height_value = 0;
+			var width_value = 0;
+			var length_value = 0;
+			var shippedHazardousGoods_value = "explosive";
+			var operating_value = 0;
+			var speed_value=new Array(0,1.7,10,1.4,30,1.1,50,1.0,70,1.1,100,1.2,120,1.4,140,1.8);
+			var search_lng = 0;
+			var search_lat = 0;
+			var search_flag = 0;
+			document.getElementById("route_search").setAttribute("disabled", true)
+			map.addEventListener("rightclick",function(e){
+				lng = e.point.lng;
+				lat = e.point.lat;
+			});
+			$("#routingtypes").change(function(){
+				var routingtypes_text = $("#routingtypes option:selected").text();
+				routingtypes_value = routingtypes_text;
+			});
+			$("#mode").change(function() {
+				var mode_test = $("#mode option:selected").text();
+				Mode_value = mode_test;
+			});
+			$("#shippedHazardousGoods").change(function() {
+				var shippedHazardousGoods_text = $("#shippedHazardousGoods option:selected").text();
+				shippedHazardousGoods_value = shippedHazardousGoods_text;
+			});
+			$("#rangetype").change(function() {
+				var rangetype_test = $("#rangetype option:selected").text();
+				rangetype_value = rangetype_test;
+			});
+			$("#displayisoline").click(function() {
+				var displayisoline_temp = $("#displayisoline").val();
+				//displayisoline_value = displayisoline_temp;
+				operating_value = displayisoline_temp;
+			});
+			$("#search").click(function() {
+				var search_temp = $("#search").val();
+				//search_value = search_temp;
+				operating_value = search_temp;
+			});
+			$("#route_start").click(function() {
+				var route_start_temp = $("#route_start").val();
+				//route_start_value = route_start_temp;
+				operating_value = route_start_temp;
+			});
+			$("#route_search").click(function() {
+				var route_search_temp = $("#route_search").val();
+				//route_search_value = route_search_temp;
+				operating_value = route_search_temp;
+			});
+			/*if($("#traffic").is(':checked')) {
+				traffic_value = "enabled";
+			}*/
+			$("#traffic").on("click", function() {
+				if($(this).is(":checked")) {
+					traffic_value = "enabled";
+				} else {
+					traffic_value = "disabled";
+				}
+			});
+			var txtMenuItem = [
+				{
+					text:'set my location',
+					callback:function(){
+						locationLng = lng;
+						locationLat = lat;
+						$("#vp").val(lng + "," + lat);
+						var point = new BMap.Point(lng, lat);
+						var locationIcon = new BMap.Icon('location.png',new BMap.Size(32,32));
+						var marker = new BMap.Marker(point, {icon: locationIcon});// 创建标注 
+						//marker = new BMap.Marker(point);// 创建标注 
+						map.addOverlay(marker);
+					}
+				},
+				{
+					text:'set destination',
+					callback:function(){
+						destinationLng = lng;
+						destinationLat = lat;
+						$("#dp").val(lng + "," + lat);
+						var point = new BMap.Point(lng, lat);
+						var locationIcon = new BMap.Icon("destination.png", new BMap.Size(lng, lat), {    
+					        // 指定定位位置。   
+					        // 当标注显示在地图上时，其所指向的地理位置距离图标左上    
+					        // 角各偏移10像素和25像素。您可以看到在本例中该位置即是   
+					        // 图标中央下端的尖角位置。    
+					        anchor: new BMap.Size(10, 25),    
+					        // 设置图片偏移。   
+					        // 当您需要从一幅较大的图片中截取某部分作为标注图标时，您   
+					        // 需要指定大图的偏移位置，此做法与css sprites技术类似。    
+					        imageOffset: new BMap.Size(0, 0)   // 设置图片偏移    
+					    });
+						var marker = new BMap.Marker(point, {icon: locationIcon});// 创建标注 
+						marker = new BMap.Marker(point);// 创建标注 
+						map.addOverlay(marker);
+					}
+				}
+			];
+			for(var i=0; i < txtMenuItem.length; i++){
+				menu.addItem(new BMap.MenuItem(txtMenuItem[i].text,txtMenuItem[i].callback,100));
+			}
+			map.addContextMenu(menu);
+			var requesttime1 = 0;
+			var requesttime2 = 0;
+			function init_map() {
+				map.clearOverlays(); 
+				$("#url").html("");
+				$("#log").html("");
+				$("#searchTime").html("");
+				$("#drawTime").html("");
+				var new_point = new BMap.Point(-73.958229,40.773358);
+				map.panTo(new_point);
+				map.centerAndZoom(new_point, 15);
+				document.getElementById("route_search").disabled = true;
+			}
+			function showEv(result) {
+				if(typeof(result) == 'undefined' && result)
+				{
+					flage = false;
+					alert("test fail");
+				}
+				var requesttime2 = new Date().getTime();
+				$("#searchTime").html("request time:" + ((requesttime2 - requesttime1) / 1000) + "seconds");
+				//var MAX = result.evStations.evStation.length;
+				var count_temp = result.count;
+				$("#count").val(count_temp);
+				var markers = [];
+				$.each(result.evStations.evStation,function(idx,obj){
+					var point = new BMap.Point(obj.position.longitude, obj.position.latitude);
+					var evIcon = new BMap.Icon('EV-Stand.ico',new BMap.Size(32,32));
+					var marker = new BMap.Marker(point, {icon: evIcon});// 创建标注 
+					map.addOverlay(marker);
+					addClickHandler(obj.id, marker);
+				});
+				var drawtime = new Date().getTime();
+				$("#drawTime").html("draw time:" + ((drawtime - requesttime2) / 1000) + "seconds");
+				var data = JSON.stringify(result);
+				$("#log").html(data);
+				request_time_value = ((requesttime2 - requesttime1) / 1000) + "seconds";
+				draw_time_value = ((drawtime - requesttime2) / 1000) + "seconds";
+				if($("#vp").val() != 0 || $("#dp").val() == 0) {
+					var vp_value_temp = $("#vp").val();
+					var vp_temp = vp_value_temp.split(",");
+					search_lng = vp_temp[0];
+					search_lat = vp_temp[1];
+					search_flag = 1;
+				} else if($("#dp").val() != 0 || $("#vp").val() == 0) {
+					var dp_value_temp = $("#dp").val();
+					var dp_temp = dp_value_temp.split(",");
+					search_lng = dp_temp[0];
+					search_lat = dp_temp[1];
+					search_flag = 2;				
+				}
+			}
+			
+			function showRoute(result) //算路
+			{
+				var requesttime2 = new Date().getTime();
+				$("#searchTime").html("request time:" + ((requesttime2 - requesttime1) / 1000) + "seconds");
+				var points = [];
+				$.each(result.response.route,function(idx,obj)
+				{
+					$.each(obj.leg,function(idx,obj1)
+					{
+						$.each(obj1.maneuver,function(idx,obj2)
+						{
+							var point = new BMap.Point(obj2.position.longitude, obj2.position.latitude);
+							points.push(point);
+							pointsring += obj2.position.latitude+","+obj2.position.longitude+";";
+						})
+					})
+				});
+				var polyline = new BMap.Polyline(points, {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5});
+				map.addOverlay(polyline);
+				var drawtime = new Date().getTime();
+				$("#drawTime").html("draw time:" + ((drawtime - requesttime2) / 1000) + "seconds");
+				var data = JSON.stringify(result);
+				$("#log").html(data);
+				document.getElementById("route_search").disabled = false;
+				request_time_value = ((requesttime2 - requesttime1) / 1000) + "seconds";
+				draw_time_value = ((drawtime - requesttime2) / 1000) + "seconds";
+
+			}
+			function showRouteSearch(result) 
+			{
+				var requesttime2 = new Date().getTime();
+				$("#searchTime").html("request time:" + ((requesttime2 - requesttime1) / 1000) + "seconds");
+				$.each(result.evStations.evStation,function(idx,obj)
+				{
+					var point = new BMap.Point(obj.position.longitude, obj.position.latitude);
+					var evIcon = new BMap.Icon('EV-Stand.ico',new BMap.Size(32,32));
+					var marker = new BMap.Marker(point, {icon: evIcon});// 创建标注 
+					// var marker = new BMap.Marker(point);
+					map.addOverlay(marker);
+					addClickHandler(obj.id, marker);
+				});
+				var drawtime = new Date().getTime();
+				$("#drawTime").html("draw time:" + ((drawtime - requesttime2) / 1000) + "seconds");
+				var data = JSON.stringify(result);
+				$("#log").html(data);
+				request_time_value = ((requesttime2 - requesttime1) / 1000) + "seconds";
+				draw_time_value = ((drawtime - requesttime2) / 1000) + "seconds";
+			}
+			function showIso(result) { //等值线
+				var data = JSON.stringify(result);
+				$("#log").html(data);
+				var requesttime2 = new Date().getTime();
+				$("#searchTime").html("request time:" + ((requesttime2 - requesttime1) / 1000) + "seconds");
+				var isopoints = [];
+				$.each(result.response.isoline, function(idx, obj) 
+				{
+					$.each(obj.component, function(idx, obj1)
+					{
+						$.each(obj1.shape, function(idx, obj2)
+						{
+							var iso_arr = obj2.split(",");
+							var isolng = iso_arr[1];
+							var isolat = iso_arr[0];
+							var point= new BMap.Point(isolng,isolat);
+							isopoints.push(point);
+						})
+					})
+				});
+				var polygon = new BMap.Polygon(isopoints, {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
+				map.addOverlay(polygon);
+				var drawtime = new Date().getTime();
+				$("#drawTime").html("draw time:" + ((drawtime - requesttime2) / 1000) + "seconds");
+				request_time_value = ((requesttime2 - requesttime1) / 1000) + "seconds";
+				draw_time_value = ((drawtime - requesttime2) / 1000) + "seconds";
+			}
+			
+			function addClickHandler(content,marker){
+				marker.addEventListener("click",function(e){
+					openInfo(content,e)}
+				);
+			}
+			var markerOpts = {
+					width : 450,     // 信息窗口宽度
+					height: 200,     // 信息窗口高度
+					title : "ev detail" , // 信息窗口标题
+					enableMessage:true//设置允许信息窗发送短息
+			};
+			function openInfo(content,e){
+				var p = e.target;
+				lng = p.getPosition().lng;
+				lat = p.getPosition().lat;
+				var src = "https://ev-v2.cit.cc.api.here.com/ev/stations/" + content + ".json?app_id=DemoCredForAutomotiveAPI&app_code=JZlojTwKtPLbrQ9fEGznlA";
+				$("#url").html(src);
+				$("head").append("<script src='" + src + "&jsoncallback=showEvDetail'><\/script>");
+			}
+			function showEvDetail(result) {
+				var data = JSON.stringify(result);
+				$("#log").html(data);
+				var point = new BMap.Point(lng, lat);
+				var data = "";
+				$.each(result.evStations.evStation,function(idx,obj){
+					data = data + "name:" + obj.name;
+					data = data + "<br/>lastUpdateTimestamp:" + obj.lastUpdateTimestamp;
+					data = data + "<br/>address:" + obj.address.streetNumber + obj.address.street + obj.address.region + obj.address.country + obj.address.city;
+					data = data + "<br/>brand:" + JSON.stringify(obj.brand);
+					data = data + "<br/>totalNumberOfConnectors:" + obj.totalNumberOfConnectors;
+				});
+				var infoWindow = new BMap.InfoWindow(data,markerOpts);  // 创建信息窗口对象 
+				map.openInfoWindow(infoWindow,point); //开启信息窗口
+			}
+			function remove_overlay(){
+				map.clearOverlays(); 
+				$("#url").html("");
+				$("#log").html("");
+				$("#searchTime").html("");
+				//$("#vp").val("");
+				getValue(this);
+				if(vp_value_lng != '' && vp_value_lat != '')
+				{
+					var new_point = new BMap.Point(vp_value_lng, vp_value_lat);
+					var locationIcon = new BMap.Icon('location.png',new BMap.Size(32,32));
+					var marker = new BMap.Marker(new_point, {icon: locationIcon});// 创建标注 
+					map.addOverlay(marker);
+				}
+				if(dp_value_lng != '' && dp_value_lat != '')
+				{
+					var new_point = new BMap.Point(dp_value_lng, dp_value_lat);
+					var locationIcon = new BMap.Icon('destination.png',new BMap.Size(32,32));
+					var marker = new BMap.Marker(new_point, {icon: locationIcon});// 创建标注 
+					map.addOverlay(marker);
+				}
+				//$("#dp").val("");
+				$("#count").val("");
+				document.getElementById("route_search").disabled = true;
+			}
+			
+			function saveMapFile() {
+				const base64 = (s)=> {
+				  return window.btoa(unescape(encodeURIComponent(s)));
+				}
+				var log_text = $("#log").val();
+				const str= log_text;
+				const uri = 'data:text/plain;charset=UTF-8;base64,';
+				const url = uri + base64(str);
+				const a = document.createElement('a');
+				a.href = url;
+				//a.download = displayisoline_value + ";" + search_value + ";" + route_start_value + ";" + route_search_value + ";" + "Mode_" + Mode_value + ";" +"rangetype_" + rangetype_value + ";"+ "request_time" + request_time_value + ";" + "draw_time " + draw_time_value+".json";
+				if(operating_value == "search") {
+					a.download =search_lng + ";" + search_lat + ";" + search_flag + ";" + operating_value + ";" + "Radius_" + radius_value + ";" +"request-time_" + request_time_value + ";" + "draw-time_" + draw_time_value + ".json";
+				} else if(operating_value == "displayisoline") {
+					a.download = operating_value + ";" + "Mode_" + Mode_value + ";" + "Types_" + routingtypes_value + ";" + "traffic_" + traffic_value + ";" + "RangeType_" + rangetype_value + ";" + "Range_" + range_value + ";" + "MaxPoints_" + maxpoints_value + ";" + "Resolution_" + resolution_value + ";" + "ascent_" + ascent_value + ";" + "descent_" + descent_value + ";" + "request-time_" + request_time_value + ";" + "draw-time_ " + draw_time_value + ".json";
+				} else if(operating_value == "CalculatingRoute") {
+					a.download = operating_value + ";" + "Mode_" + Mode_value + ";" + "Types_" + routingtypes_value + ";" + "traffic_" + traffic_value + ";" +  "RangeType_" + rangetype_value + ";" + "request-time_" + request_time_value + ";" + "draw-time_ " + draw_time_value +".json";
+				} else if(operating_value == "ChargingPileRoad") {
+					a.download = operating_value + ";" + "CorridorWidth_" + corridorWidth_value + ";" + "request_time" + request_time_value + ";" + "draw_time " + draw_time_value + ".json";
+				}
+				a.click();
+			}
+			function loadMapFile(input) {
+				if(window.FileReader) {
+					var file = input.files[0];
+					var reader = new FileReader();
+					reader.readAsText(file);
+					reader.onload = function() {
+						$("#log").html(this.result);
+					}
+				}
+			}
+			function getValue(input) {
+				range_value = $("#rangevalue").val();
+				corridorWidth_value = $("#corridorWidth").val() * 1000;
+				test_count = $("#test_count").val();
+				ascent_value = $("#ascent").val();
+				descent_value = $("#descent").val();
+				resolution_value = $("#resolution").val();
+				timePenalty_value = $("#timePenalty").val();
+				auxiliaryconsumption_value = $("#auxiliaryconsumption").val();
+				acceleration_value = $("#acceleration").val();
+				deceleration_value = $("#deceleration").val();
+				vp_value = $("#vp").val();
+				dp_value = $("#dp").val();
+				radius_value = $("#radius").val();
+				//speed_value = $("#speed").val();
+				maxpoints_value = $("#MaxPoints").val();
+				limitedWeight_value = $("#limitedWeight").val();
+				height_value = $("#height").val();
+				width_value = $("#width").val();
+				length_value = $("#length").val();
+				var vp_temp = vp_value.split(",");
+				vp_value_lng = vp_temp[0];
+				vp_value_lat = vp_temp[1];
+				locationLng = vp_value_lng;
+				locationLat = vp_value_lat;
+				var dp_temp = dp_value.split(",");
+				dp_value_lng = dp_temp[0];
+				dp_value_lat = dp_temp[1];
+				destinationLng = dp_value_lng;
+				destinationLat = dp_value_lat;
+			}
+			function repaintingMap() {
+				log_value = $("#log").val();
+				var file = $("#selectmap").val();
+				var pos = file.lastIndexOf("\\");
+				var filename = file.substring(pos + 1);
+				var filename_type = filename.split(";");
+				var display_type = 0;
+				if( !isNaN(filename_type[0]) && !isNaN(filename_type[1]) ) {
+					search_lng = filename_type[0];
+					search_lat = filename_type[1];
+				}
+				for(var i = 0; i < 4; i++) {
+					if(filename_type[i] == "displayisoline") {
+						display_type = "displayisoline";
+						break;
+					} else if(filename_type[i] == "search") {
+						display_type = "search";
+						break;
+					} else if(filename_type[i] == "CalculatingRoute") {
+						display_type = "CalculatingRoute";
+						//break;
+					} else if(filename_type[i] == "ChargingPileRoad"){
+						display_type = "ChargingPileRoad";
+						break;
+					}
+				}
+				var obj_json = JSON.parse(log_value);
+				if(display_type == "displayisoline") {
+					var isopoints = [];
+					var center_lng = 0;
+					var center_lat = 0;
+					center_lng = obj_json.response.center.longitude;
+					center_lat = obj_json.response.center.latitude;
+					map.centerAndZoom(new BMap.Point(center_lng, center_lat), 15);
+					var point = new BMap.Point(obj_json.response.start.originalPosition.longitude, obj_json.response.start.originalPosition.latitude);
+					var locationIcon = new BMap.Icon('location.png',new BMap.Size(32,32));
+					var marker = new BMap.Marker(point, {icon: locationIcon});// 创建标注 
+					map.addOverlay(marker);
+					$.each(obj_json.response.isoline, function(idx, obj) 
+					{
+						$.each(obj.component, function(idx, obj1)
+						{
+							$.each(obj1.shape, function(idx, obj2)
+							{
+								var iso_arr = obj2.split(",");
+								var isolng = iso_arr[1];
+								var isolat = iso_arr[0];
+								var point= new BMap.Point(isolng,isolat);
+								isopoints.push(point);
+							})
+						})
+					});
+					var polygon = new BMap.Polygon(isopoints, {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
+					map.addOverlay(polygon);
+				}
+				if(display_type == "CalculatingRoute") {
+					var points = [];
+					$.each(obj_json.response.route,function(idx,obj)
+					{
+						$.each(obj.leg,function(idx,obj1)
+						{
+							$.each(obj1.maneuver,function(idx,obj2)
+							{
+								var point = new BMap.Point(obj2.position.longitude, obj2.position.latitude);
+								points.push(point);
+							})
+							var center_lng = obj1.start.mappedPosition.longitude;
+							var center_lat = obj1.start.mappedPosition.latitude;
+							map.centerAndZoom(new BMap.Point(center_lng, center_lat), 15);
+							var point = new BMap.Point(center_lng, center_lat);
+							var locationIcon = new BMap.Icon('location.png',new BMap.Size(32,32));
+							var marker = new BMap.Marker(point, {icon: locationIcon});
+							map.addOverlay(marker);
+							center_lng = obj1.end.mappedPosition.longitude;
+							center_lat = obj1.end.mappedPosition.latitude;
+							point = new BMap.Point(center_lng, center_lat);
+							locationIcon = new BMap.Icon('destination.png',new BMap.Size(32,32));
+							marker = new BMap.Marker(point, {icon: locationIcon});
+							map.addOverlay(marker);
+							
+						})
+					});
+					var polyline = new BMap.Polyline(points, {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5});
+					map.addOverlay(polyline);
+					var data = JSON.stringify(obj_json);
+					$("#log").html(data);
+				}
+				if(display_type == "ChargingPileRoad") {
+					$.each(obj_json.evStations.evStation,function(idx,obj)
+					{
+						var point = new BMap.Point(obj.position.longitude, obj.position.latitude);
+						map.centerAndZoom(new BMap.Point(obj.position.longitude, obj.position.latitude), 15);
+						var evIcon = new BMap.Icon('EV-Stand.ico',new BMap.Size(32,32));
+						var marker = new BMap.Marker(point, {icon: evIcon});// 创建标注 
+						// var marker = new BMap.Marker(point);
+						map.addOverlay(marker);
+						addClickHandler(obj.id, marker);
+					});
+					var data = JSON.stringify(obj_json);
+					$("#log").html(data);
+				}
+				if(display_type == "search") {
+					var markers = [];
+					var point_d = new BMap.Point(search_lng, search_lat);
+					if(search_flag == 1) {
+						var evIcon_d = new BMap.Icon('location.png',new BMap.Size(32,32));
+					} else if(search_flag == 2) {
+						var evIcon_d = new BMap.Icon('destination.png',new BMap.Size(32,32));
+					}
+					var marker_d = new BMap.Marker(point_d, {icon: evIcon_d});// 创建标注 
+					map.addOverlay(marker_d);
+					$.each(obj_json.evStations.evStation,function(idx,obj) {
+						var point = new BMap.Point(obj.position.longitude, obj.position.latitude);
+						var evIcon = new BMap.Icon('EV-Stand.ico',new BMap.Size(32,32));
+						var marker = new BMap.Marker(point, {icon: evIcon});// 创建标注 
+						map.addOverlay(marker);
+						addClickHandler(obj.id, marker);
+					});
+					var data = JSON.stringify(obj_json);
+					$("#log").html(data);
+				}
+				
+			}
+			function vehiclepoint() {
+				var new_point = new BMap.Point(vp_value_lng, vp_value_lat);
+				map.panTo(new_point);
+				map.centerAndZoom(new_point, 15);
+				var locationIcon = new BMap.Icon('location.png',new BMap.Size(32,32));
+				var marker = new BMap.Marker(new_point, {icon: locationIcon});// 创建标注 
+				map.addOverlay(marker);
+			}
+			function designatedpoint() {
+				var new_point = new BMap.Point(dp_value_lng, dp_value_lat);
+				map.panTo(new_point);
+				map.centerAndZoom(new_point, 15);
+				var locationIcon = new BMap.Icon('destination.png',new BMap.Size(32,32));
+				var marker = new BMap.Marker(new_point, {icon: locationIcon});// 创建标注 
+				map.addOverlay(marker);
+			}
+			function start_test() {
+				var count = 1;
+				while(flage)
+				{
+					var src = "https://ev-v2.cit.cc.api.here.com/ev/stations.json?app_id=DemoCredForAutomotiveAPI&app_code=JZlojTwKtPLbrQ9fEGznlA&prox=" + locationLat + "," + locationLng + ",5000";
+					$("#url").html(src);
+					$("head").append("<script src='" + src + "&jsoncallback=showEv'><\/script>");
+					
+					if(test_count == count)
+					{
+						flage = false;
+					}
+					count++
+				}
+				flage = true;
+			}
+			$(document).ready(function () {
+				$("#search").click(function () {
+					requesttime1 = new Date().getTime();
+					var src = "https://ev-v2.cit.cc.api.here.com/ev/stations.json?app_id=DemoCredForAutomotiveAPI&app_code=JZlojTwKtPLbrQ9fEGznlA&prox=" + locationLat + "," + locationLng + "," + radius_value;
+					$("#url").html(src);
+					$("head").append("<script src='" + src + "&jsoncallback=showEv'><\/script>");
+	            });
+			});
+			
+			$(document).ready(function () {
+				var src = 0;
+				$("#route_start").click(function () {
+					requesttime1 = new Date().getTime();
+					if(routingtypes_value == "pedestrian") {
+						src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" +  routingtypes_value;
+					} else if(routingtypes_value == "truck" && rangetype_value == "consumption") {
+						src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" +  routingtypes_value + ";" + "traffic:" + traffic_value + "&limitedWeight=" + limitedWeight_value + "&height=" + height_value + "&shippedHazardousGoods=" + shippedHazardousGoods_value + "&consumptionmodel=standard&customconsumptiondetails=speed,"+ speed_value +";ascent," + ascent_value + ";" + "descent," + descent_value + ";" + "timePenalty," + timePenalty_value + ";" + "auxiliaryconsumption," + auxiliaryconsumption_value + ";" + "acceleration," + acceleration_value + ";" + "deceleration," + deceleration_value;
+					} else if(routingtypes_value == "truck" && rangetype_value != "consumption") {
+						src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" +  routingtypes_value + ";" + "traffic:" + traffic_value + "&limitedWeight=" + limitedWeight_value + "&height=" + height_value + "&shippedHazardousGoods=" + shippedHazardousGoods_value;
+					} else if(routingtypes_value == "publicTransport") {
+						src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" + routingtypes_value + "&departure=now&combineChange=true";
+					} else if(routingtypes_value == "car" && rangetype_value == "consumption") {
+						src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" +  routingtypes_value + ";" + "traffic:" + traffic_value + "&consumptionmodel=standard&customconsumptiondetails=speed,"+ speed_value +";ascent," + ascent_value + ";" + "descent," + descent_value + ";" + "timePenalty," + timePenalty_value + ";" + "auxiliaryconsumption," + auxiliaryconsumption_value + ";" + "acceleration," + acceleration_value + ";" + "deceleration," + deceleration_value;
+					} else if(routingtypes_value == "car" && rangetype_value != "consumption") {
+						src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" +  routingtypes_value + ";" + "traffic:" + traffic_value;
+					} else {
+						src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" +  routingtypes_value + ";" + "traffic:" + traffic_value;
+					}
+					//var src = "https://route.cit.cc.api.here.com/routing/7.2/calculateroute.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&waypoint0=geo!" + locationLat + "," + locationLng + "&waypoint1=geo!" + destinationLat + "," + destinationLng +"&mode=" + Mode_value + ";" +  routingtypes_value + ";" + "traffic:" + traffic_value + "&limitedWeight=" + limitedWeight_value + "&height=" + height_value;
+					$("#url").html(src);
+					$("head").append("<script src='" + src + "&jsoncallback=showRoute'><\/script>");
+	            });
+			});		
+			$(document).ready(function () {
+				var src = 0;
+				$("#displayisoline").click(function () {
+					requesttime1 = new Date().getTime();
+					if(rangetype_value == "consumption") {
+						src = "https://isoline.route.api.here.com/routing/7.2/calculateisoline.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&mode=" + Mode_value + ";" + routingtypes_value + ";traffic:" + traffic_value + "&rangetype=" + rangetype_value + "&start=geo!" + locationLat + "," + locationLng + "&range=" + range_value +"&consumptionmodel=standard&customconsumptiondetails=speed,"+ speed_value +";ascent," + ascent_value + ";" + "descent," + descent_value + ";" + "timePenalty," + timePenalty_value + ";" + "auxiliaryconsumption," + auxiliaryconsumption_value + ";" + "acceleration," + acceleration_value + ";" + "deceleration," + deceleration_value + "&maxpoints=" + maxpoints_value + "&resolution=" + resolution_value;
+					} else {
+						src = "https://isoline.route.api.here.com/routing/7.2/calculateisoline.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&mode=" + Mode_value + ";" + routingtypes_value + ";traffic:" + traffic_value + "&rangetype=" + rangetype_value + "&start=geo!" + locationLat + "," + locationLng + "&range=" + range_value + "&maxpoints=" + maxpoints_value + "&resolution=" + resolution_value;
+					}
+					//var src = "https://isoline.route.api.here.com/routing/7.2/calculateisoline.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&mode=" + Mode_value + ";" + "car;traffic:" + traffic_value + "&rangetype=" + rangetype_value + "&start=geo!" + locationLat + "," + locationLng + "&range=" + range_value +"&consumptionmodel=standard&customconsumptiondetails=speed,"+ speed_value +";ascent," + ascent_value + ";" + "descent," + descent_value + ";" + "timePenalty," + timePenalty_value + ";" + "auxiliaryconsumption," + auxiliaryconsumption_value + ";" + "acceleration," + acceleration_value + ";" + "deceleration," + deceleration_value + "&maxpoints=" + maxpoints_value + "&resolution=" + resolution_value;
+					$("#url").html(src);
+					$("head").append("<script src='" + src + "&jsoncallback=showIso'><\/script>");
+	            });
+			});
+			$(document).ready(function () {
+				$("#route_search").click(function () {
+					requesttime1 = new Date().getTime();
+					var src = "https://ev-v2.cit.cc.api.here.com/ev/stations.json?app_id=2XfHBClGvrrZVuOgk856&app_code=eAhDQZqHpp-FiTAuvnXSdA&corridor="+pointsring+"&offset=0"+"&corridorwidth=" + corridorWidth_value;
+					$("#url").html(src);
+					$("head").append("<script src='" + src + "&jsoncallback=showRouteSearch'><\/script>");
+					pointsring = "";
+	            });
+			});
+		</script>
+	</body>
+</html>
